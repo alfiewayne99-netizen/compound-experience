@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Dubai Lifestyle Club — Interest Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Noto+Serif+Display:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #050505;
+    color: #e8e0d4;
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .header .label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #C6A87D;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-family: 'Noto Serif Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .header p {
+    font-size: 14px;
+    color: #b0a494;
+    line-height: 1.7;
+  }
+  .progress {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 32px;
+  }
+  .progress-dot {
+    flex: 1;
+    height: 3px;
+    background: rgba(198,168,125,0.15);
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .progress-dot.active { background: #C6A87D; }
+  .progress-dot.done { background: rgba(198,168,125,0.5); }
+  .step {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .step.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .q-number {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #8a8070;
+    margin-bottom: 8px;
+  }
+  .question-text {
+    font-family: 'Noto Serif Display', Georgia, serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: #0e0e0c;
+    border: 1px solid rgba(198,168,125,0.12);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .option:hover, .option:active { border-color: rgba(198,168,125,0.4); background: #121210; }
+  .option.selected { border-color: #C6A87D; background: rgba(198,168,125,0.08); }
+  .option input[type="radio"], .option input[type="checkbox"] {
+    accent-color: #C6A87D;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .option span { font-size: 15px; color: #b0a494; }
+  .option.selected span { color: #e8e0d4; }
+  input[type="text"], input[type="email"], textarea {
+    width: 100%;
+    background: #0e0e0c;
+    border: 1px solid rgba(198,168,125,0.15);
+    color: #e8e0d4;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 10px;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  input:focus, textarea:focus { border-color: #C6A87D; }
+  textarea { min-height: 90px; resize: vertical; }
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+  }
+  .btn-next, .btn-submit {
+    background: #C6A87D;
+    color: #050505;
+    border: none;
+    padding: 14px 36px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 10px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: opacity 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-next:hover, .btn-submit:hover { opacity: 0.9; }
+  .btn-back {
+    background: none;
+    border: none;
+    color: #8a8070;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    padding: 14px 20px;
+  }
+  .btn-back:hover { color: #C6A87D; }
+  .counter-badge {
+    text-align: center;
+    font-size: 12px;
+    color: #8a8070;
+    margin-bottom: 20px;
+  }
+  .counter-badge strong { color: #C6A87D; }
+
+  /* Thank you screen */
+  #thanks {
+    display: none;
+    text-align: center;
+    padding: 80px 24px;
+  }
+  #thanks .label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #C6A87D;
+    margin-bottom: 16px;
+  }
+  #thanks h1 {
+    font-family: 'Noto Serif Display', Georgia, serif;
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+  #thanks p {
+    color: #b0a494;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .share-btn {
+    background: none;
+    border: 1px solid rgba(198,168,125,0.3);
+    color: #C6A87D;
+    padding: 14px 32px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .share-btn:hover { background: rgba(198,168,125,0.1); }
+  .copied { color: #7aaa6e !important; border-color: #7aaa6e !important; }
+</style>
+</head>
+<body>
+
+<div class="container" id="surveyContainer">
+  <div class="header">
+    <div class="label">Confidential Research</div>
+    <h1>Help Shape Dubai's Next<br>Premium Lifestyle Club</h1>
+    <p>We're designing an all-in-one members club — fitness, wellness, entertainment, nightlife. Your input shapes what gets built. Takes 2 minutes.</p>
+  </div>
+
+  <div class="counter-badge">Join <strong id="respCount">37</strong> others who've already responded</div>
+
+  <div class="progress" id="progressBar">
+    <div class="progress-dot active"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+  </div>
+
+  <!-- Q1: Age -->
+  <div class="step active" data-step="0">
+    <div class="q-number">Question 1 of 10</div>
+    <div class="question-text">What's your age range?</div>
+    <div class="options" data-name="age">
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="age" value="25-30"><span>25 – 30</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="age" value="31-35"><span>31 – 35</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="age" value="36-45"><span>36 – 45</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="age" value="46+"><span>46+</span></label>
+    </div>
+    <div class="nav-row">
+      <div></div>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q2: Location -->
+  <div class="step" data-step="1">
+    <div class="q-number">Question 2 of 10</div>
+    <div class="question-text">Where in Dubai do you live?</div>
+    <div class="options" data-name="location">
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="location" value="marina-jbr"><span>Marina / JBR</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="location" value="downtown-difc"><span>Downtown / DIFC</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="location" value="jumeirah"><span>Jumeirah / Umm Suqeim</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="location" value="business-bay"><span>Business Bay</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="location" value="other"><span>Other area</span></label>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q3: Current spend -->
+  <div class="step" data-step="2">
+    <div class="q-number">Question 3 of 10</div>
+    <div class="question-text">How much do you currently spend monthly on fitness and wellness?</div>
+    <div class="options" data-name="current_spend">
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="current_spend" value="under-500"><span>Under AED 500</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="current_spend" value="500-1500"><span>AED 500 – 1,500</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="current_spend" value="1500-3000"><span>AED 1,500 – 3,000</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="current_spend" value="3000+"><span>AED 3,000+</span></label>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q4: Sports -->
+  <div class="step" data-step="3">
+    <div class="q-number">Question 4 of 10</div>
+    <div class="question-text">Which sports do you currently play?</div>
+    <div class="options" data-name="sports">
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="sports" value="padel"><span>Padel</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="sports" value="tennis"><span>Tennis</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="sports" value="golf"><span>Golf</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="sports" value="boxing"><span>Boxing / MMA</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="sports" value="basketball"><span>Basketball</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="sports" value="none"><span>None of these</span></label>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q5: League -->
+  <div class="step" data-step="4">
+    <div class="q-number">Question 5 of 10</div>
+    <div class="question-text">Would you join an organized sports league at your club? (Seasons, teams, rankings, championships)</div>
+    <div class="options" data-name="league">
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="league" value="definitely"><span>Definitely — sign me up</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="league" value="probably"><span>Probably — sounds interesting</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="league" value="maybe"><span>Maybe — depends on the details</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="league" value="no"><span>Not for me</span></label>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q6: Amenities -->
+  <div class="step" data-step="5">
+    <div class="q-number">Question 6 of 10</div>
+    <div class="question-text">Which of these would you actually use at a premium club?</div>
+    <div class="options" data-name="amenities">
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="amenities" value="sim-racing"><span>Sim racing lounge</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="amenities" value="golf-sim"><span>Golf simulator (Trackman)</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="amenities" value="cinema"><span>Private cinema (UFC, F1, movies)</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="amenities" value="iv-therapy"><span>IV therapy (NAD+, vitamins, recovery)</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="amenities" value="blood-dexa"><span>Blood panels & DEXA body scans</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="amenities" value="nightclub"><span>Members-only club nights</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="amenities" value="jazz"><span>Live jazz & acoustic evenings</span></label>
+      <label class="option" onclick="toggleCheck(this)"><input type="checkbox" name="amenities" value="gaming"><span>Gaming lounge</span></label>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q7: Price -->
+  <div class="step" data-step="6">
+    <div class="q-number">Question 7 of 10</div>
+    <div class="question-text">What would you pay monthly for an all-in-one premium club?</div>
+    <p style="font-size: 13px; color: #8a8070; margin-bottom: 20px;">Gym + recovery + workspace + entertainment + nightlife + health optimization — all under one roof.</p>
+    <div class="options" data-name="price">
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="price" value="2000-3000"><span>AED 2,000 – 3,000</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="price" value="3000-5000"><span>AED 3,000 – 5,000</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="price" value="5000-8000"><span>AED 5,000 – 8,000</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="price" value="8000+"><span>AED 8,000+ for the right experience</span></label>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q8: Corporate -->
+  <div class="step" data-step="7">
+    <div class="q-number">Question 8 of 10</div>
+    <div class="question-text">Would your company pay for a corporate wellness membership at a premium club?</div>
+    <div class="options" data-name="corporate">
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="corporate" value="yes-likely"><span>Yes — my company would likely pay for this</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="corporate" value="maybe"><span>Maybe — I'd need to pitch it internally</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="corporate" value="no"><span>No — I'd pay myself</span></label>
+      <label class="option" onclick="selectRadio(this)"><input type="radio" name="corporate" value="self-employed"><span>I'm self-employed / freelance</span></label>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q9: Missing -->
+  <div class="step" data-step="8">
+    <div class="q-number">Question 9 of 10</div>
+    <div class="question-text">What's missing from Dubai's current gym and club scene?</div>
+    <textarea name="missing" placeholder="Anything you wish existed but doesn't..." style="margin-bottom: 16px;"></textarea>
+    <p style="font-size: 12px; color: #8a8070;">Your words might shape what gets built. Be honest.</p>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-next" onclick="nextStep()">Next</button>
+    </div>
+  </div>
+
+  <!-- Q10: Contact -->
+  <div class="step" data-step="9">
+    <div class="q-number">Question 10 of 10</div>
+    <div class="question-text">Almost done. Drop your details for early access.</div>
+    <p style="font-size: 13px; color: #8a8070; margin-bottom: 20px;">100% optional. We'll only reach out when something real is ready.</p>
+    <div style="margin-bottom: 16px;">
+      <input type="text" name="name" placeholder="First name">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <input type="email" name="email" placeholder="Email (for early access)">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <input type="text" name="instagram" placeholder="Instagram handle (optional)">
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="prevStep()">Back</button>
+      <button class="btn-submit" onclick="submitSurvey()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- THANK YOU -->
+<div id="thanks">
+  <div class="label">Thank You</div>
+  <h1>Response Recorded</h1>
+  <p>Your input helps shape what gets built.<br>If you left your email, you'll be first to know.</p>
+  <p style="font-size: 14px; color: #C6A87D; margin-bottom: 24px;">Know someone who'd want in?</p>
+  <button class="share-btn" id="shareBtn" onclick="copyLink()">Copy Link to Share</button>
+  <p style="font-size: 11px; color: #8a8070; margin-top: 40px;">Confidential · March 2026</p>
+</div>
+
+<script>
+  let currentStep = 0;
+  const totalSteps = 10;
+  const dots = document.querySelectorAll('.progress-dot');
+
+  function updateProgress() {
+    dots.forEach((dot, i) => {
+      dot.className = 'progress-dot';
+      if (i < currentStep) dot.classList.add('done');
+      if (i === currentStep) dot.classList.add('active');
+    });
+  }
+
+  function selectRadio(el) {
+    const parent = el.closest('.options');
+    parent.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    el.querySelector('input').checked = true;
+  }
+
+  function toggleCheck(el) {
+    const cb = el.querySelector('input');
+    cb.checked = !cb.checked;
+    el.classList.toggle('selected', cb.checked);
+  }
+
+  function nextStep() {
+    const steps = document.querySelectorAll('.step');
+    if (currentStep < totalSteps - 1) {
+      steps[currentStep].classList.remove('active');
+      currentStep++;
+      steps[currentStep].classList.add('active');
+      updateProgress();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function prevStep() {
+    const steps = document.querySelectorAll('.step');
+    if (currentStep > 0) {
+      steps[currentStep].classList.remove('active');
+      currentStep--;
+      steps[currentStep].classList.add('active');
+      updateProgress();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function submitSurvey() {
+    // Collect all form data
+    const data = {};
+    document.querySelectorAll('input[type="radio"]:checked').forEach(r => data[r.name] = r.value);
+    document.querySelectorAll('input[type="checkbox"]:checked').forEach(c => {
+      if (!data[c.name]) data[c.name] = [];
+      data[c.name].push(c.value);
+    });
+    document.querySelectorAll('textarea, input[type="text"], input[type="email"]').forEach(f => {
+      if (f.value.trim()) data[f.name] = f.value.trim();
+    });
+    data.timestamp = new Date().toISOString();
+
+    console.log('Survey Response:', JSON.stringify(data, null, 2));
+
+    // Store locally
+    const responses = JSON.parse(localStorage.getItem('compound_survey') || '[]');
+    responses.push(data);
+    localStorage.setItem('compound_survey', JSON.stringify(responses));
+
+    // Hide form, show thanks
+    document.getElementById('surveyContainer').style.display = 'none';
+    document.getElementById('thanks').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  function copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('shareBtn');
+      btn.textContent = 'Link Copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy Link to Share';
+        btn.classList.remove('copied');
+      }, 3000);
+    }).catch(() => {
+      prompt('Copy this link:', url);
+    });
+  }
+
+  // Fake social proof counter (randomize slightly each load)
+  document.getElementById('respCount').textContent = 30 + Math.floor(Math.random() * 20);
+</script>
+
+</body>
+</html>
